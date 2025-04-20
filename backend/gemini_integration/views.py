@@ -1,5 +1,5 @@
 # backend/views.py
-
+import os
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -18,8 +18,9 @@ import re
 import datetime
 from django.utils.timezone import now
 
-env.read_env()
-client = genai.Client(api_key="AIzaSyDdY5zm6vURga8LZvuOGXLAMJOjqjbClLE")  # Replace with your actual key
+# Load environment variables
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY_VIEW")
+client = genai.Client(api_key=GEMINI_API_KEY)  
 
 
 def extract_filters_from_prompt(prompt):
