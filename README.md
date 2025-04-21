@@ -137,6 +137,90 @@ Sentique transforms scattered customer feedback into actionable intelligence thr
    pnpm dev
    ```
 
+
+
+
+### Database Setup
+
+#### Install PostgreSQL
+If you haven't installed PostgreSQL, install it using:
+
+**Ubuntu:**
+```sh
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+```
+
+**Mac (Homebrew):**
+```sh
+brew install postgresql
+```
+
+**Windows:**
+Download from [official PostgreSQL website](https://www.postgresql.org/download/).
+
+#### Enable and Start PostgreSQL
+```sh
+sudo systemctl enable postgresql
+sudo systemctl start postgresql
+```
+
+#### Create a Database and User
+```sh
+sudo -u postgres psql
+```
+Then, inside the PostgreSQL shell:
+```sql
+CREATE DATABASE sentique;
+CREATE USER sentique_user WITH PASSWORD 'my_password';
+ALTER ROLE sentique_user SET client_encoding TO 'utf8';
+ALTER ROLE sentique_user SET default_transaction_isolation TO 'read committed';
+ALTER ROLE sentique_user SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE sentique TO sentique_user;
+\q
+```
+
+#### Install `pgvector` Extension
+Connect to your database:
+```sh
+psql -U sentique_user -d sentique
+```
+Then, enable the `pgvector` extension:
+```sql
+CREATE EXTENSION vector;
+```
+
+### Redis Setup
+
+#### Install Redis
+
+**Ubuntu:**
+```sh
+sudo apt update
+sudo apt install redis-server
+```
+
+**Mac (Homebrew):**
+```sh
+brew install redis
+```
+
+**Windows:**
+Use [Memurai](https://www.memurai.com/) (a Redis alternative for Windows) or install Redis via WSL.
+
+#### Start and Enable Redis
+```sh
+sudo systemctl enable redis-server
+sudo systemctl start redis-server
+```
+
+#### Verify Redis is Running
+```sh
+redis-cli ping
+```
+You should see `PONG` as output.
+
+
 ### Backend
 
 1. Create and activate a virtual environment:
