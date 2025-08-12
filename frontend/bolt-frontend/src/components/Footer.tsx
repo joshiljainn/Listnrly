@@ -112,6 +112,14 @@ const Footer: React.FC = () => {
               <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200">
                 GitHub
               </a>
+              <a 
+                href="https://hidden-page-nine.vercel.app/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors duration-200"
+              >
+                Hidden Page
+              </a>
             </div>
           </div>
         </div>
