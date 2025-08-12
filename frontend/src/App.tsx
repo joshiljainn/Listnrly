@@ -1,17 +1,18 @@
-import {ThemeProvider} from "@/components/theme-provider.tsx";
-import { Toaster } from "@/components/ui/sonner"
-import { SampleDataProvider } from "@/contexts/SampleDataContext";
-import SimpleRouter from "@/routes/SimpleRoutes.tsx";
+import { RouterProvider } from 'react-router-dom';
+import { ThemeProvider } from './components/theme-provider';
+import { SampleDataProvider } from './contexts/SampleDataContext';
+import { Toaster } from './components/ui/sonner';
+import { router } from './routes/SimpleRoutes';
 
 function App() {
   return (
     <ThemeProvider>
       <SampleDataProvider>
-        <SimpleRouter />
+        <RouterProvider router={router} />
         <Toaster />
       </SampleDataProvider>
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: listnrly-frontend
+    env: static
+    buildCommand: cd frontend && pnpm install && pnpm run build
+    staticPublishPath: frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: 18
