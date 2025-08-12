@@ -1,253 +1,282 @@
-# Sentique
+# Listnrly - Feedback Analytics Platform
 
-**Sentique** is a full‑stack feedback analytics platform that ingests user reviews from App Store, Google Play, Trustpilot, Reddit and Twitter/X, processes them with a fine‑tuned BERT model into 16 categories and sentiment labels, and provides comprehensive analytics and insights.
+**Listnrly** is a full‑stack feedback analytics platform that ingests user reviews from App Store, Google Play, Trustpilot, Reddit and Twitter/X, processes them with a fine‑tuned BERT model into 16 categories, and provides actionable insights through an intuitive dashboard interface.
 
-## Overview
+## 🚀 Live Demo
 
-Sentique transforms scattered customer feedback into actionable intelligence through sophisticated data processing and AI-powered analysis. The platform combines traditional machine learning with generative AI to deliver both structured analytics and conversational insights, helping businesses understand customer sentiment at scale.
+Visit the live demo: [Listnrly Demo](https://your-github-username.github.io/listnrly)
 
-## Screenshots
+## ✨ Features
 
-### Onboarding Form  
-![Onboarding Form](sentique_screenshots/Sentique-Screenshots/Onboarding.png)  
-*The onboarding form collects essential application details via the `/register` endpoint to set up Sentique:*  
-- Apple App Store Product ID (numeric ID, e.g. `123456789`)  
-- Apple App Store Product Name (e.g. `MyAwesomeApp`)  
-- Google Play Store Package Name (e.g. `com.example.app`)  
-- Company Website URL (e.g. `example.com`)  
+### 🎯 Core Functionality
+- **Multi-Source Data Ingestion**: Collect reviews from App Store, Google Play, Trustpilot, Reddit, and Twitter/X
+- **AI-Powered Analysis**: Fine-tuned BERT model for sentiment analysis and categorization
+- **Real-time Dashboard**: Interactive analytics with charts, trends, and insights
+- **Smart Categorization**: 16 predefined categories for comprehensive feedback analysis
+- **Export Capabilities**: Generate reports and export data in multiple formats
 
-*Once you submit this information, Sentique will automatically fetch and process reviews from your configured app stores and web channels for sentiment analysis and insights.*
+### 🎨 User Experience
+- **Beautiful Landing Page**: Modern, responsive design with smooth animations
+- **Seamless Onboarding**: 20-second simulated setup process
+- **Interactive Dashboard**: Real-time data visualization and filtering
+- **Mobile Responsive**: Works perfectly on all devices
+- **Dark/Light Theme**: User preference support
 
-### Dashboard Overview
-![Dashboard Overview](sentique_screenshots/Sentique-Screenshots/Dashboard_1.png)
-*The main dashboard provides a comprehensive view of sentiment trends across time periods, sources, and categories. Key metrics are highlighted with interactive filtering capabilities.*
+### 🔧 Technical Features
+- **React 19**: Latest React with modern hooks and features
+- **TypeScript**: Full type safety and better development experience
+- **Tailwind CSS**: Utility-first styling with custom components
+- **Vite**: Lightning-fast build tool and development server
+- **Sample Data**: Comprehensive demo with realistic mock data
 
-### Sentiment Analysis
-![Sentiment Analysis](sentique_screenshots/Sentique-Screenshots/Sentiment_1.png)
-*Detailed sentiment breakdown showing positive, negative, and neutral distribution across different sources and time periods, enabling targeted analysis of customer feedback patterns.*
+## 🏗️ Architecture
 
-### Actionable Insights
-![Category Distribution](sentique_screenshots/Sentique-Screenshots/Analysis_1.png)
-*Summarization of review distribution across the 16 categories identified by our fine-tuned BERT model, helping identify the most discussed aspects of products or services.*
+### Frontend Structure
+```
+frontend/
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   ├── bolt/           # Bolt Frontend components
+│   │   └── ui/            # Custom UI components
+│   ├── pages/              # Application pages
+│   │   ├── Landing/        # Landing page
+│   │   ├── Signup/         # Registration form
+│   │   ├── Loading/        # Setup simulation
+│   │   └── Dashboard/      # Analytics dashboard
+│   ├── contexts/           # React contexts
+│   ├── lib/               # Utilities and helpers
+│   └── routes/            # Routing configuration
+```
 
-![Category Distribution](sentique_screenshots/Sentique-Screenshots/Analysis_2.png)
-*Actionable Insights of review distribution across the 16 categories identified by our fine-tuned BERT model, helping identify the most discussed aspects of products or services.*
+### Backend Structure
+```
+backend/
+├── dashboard/             # Main dashboard app
+├── reviews/              # Review processing
+├── onboard/              # User onboarding
+├── gemini_integration/   # AI integration
+└── manage.py            # Django management
+```
 
-### RAG-Based Chatbot Interface 
-![RAG Chatbot](sentique_screenshots/Sentique-Screenshots/RAG_1.png)
-*Natural language interface allowing users to query the review database conversationally, with responses generated by Gemini API using relevant review context.*
+## 🚀 Quick Start
 
-### Insights Report
-![Insights Report](sentique_screenshots/Sentique-Screenshots/Report_1.png)
-*Summary report highlighting key strengths and improvement areas based on analysis of customer reviews across selected time periods and categories.*
+### Prerequisites
+- Node.js 18+ 
+- pnpm package manager
+- Python 3.8+ (for backend)
+- Git
 
-## Key Features
+### Frontend Setup
 
-- **Multi-Source Data Collection**: Automated scraping of reviews from App Store, Google Play, Trustpilot, Reddit, and Twitter/X
-- **ML-Powered Classification**: Fine-tuned BERT model categorizes reviews into 16 distinct classes
-- **Sentiment Analysis**: Identifies positive, negative, and neutral opinions across all feedback sources
-- **Interactive Dashboards**: Real-time visualization of sentiment trends, source breakdowns, and feature-specific feedback
-- **AI-Powered Insights**: Actionable summaries of what users like and areas for improvement via Gemini API
-- **RAG-Driven Chatbot**: Natural language Q&A over vectorized review data using SentenceTransformer + Gemini
-
-## Tech Stack
-- **Frontend**: React, Vite, TypeScript, Tailwind CSS
-- **Backend**: Django, Django REST Framework, FastAPI
-- **Database**: PostgreSQL, PGVector, Redis (Celery broker)
-- **Authentication**: Django all-auth
-- **LLM**: Gemini 1.5 Pro
-- **Deep Learning Models**: Fine-tuned ROBERTA based classifier model, j-hartmann/sentiment-roberta-large-english-3-classes
-- **Network Tunneling**: ngrok
-- **Process Management**: Celery
-- **Package Management**: pnpm (for frontend), pip (for backend)
-
-## System Architecture
-
-### Backend Architecture
-
-#### Data Collection Framework
-- **Multi-Source Scrapers**: Specialized modules for each data source (App Store, Play Store, Reddit, Trustpilot, Twitter)
-- **Asynchronous Processing**: Django + Celery architecture for efficient task queuing and execution
-- **Error Handling**: Robust retry mechanisms for failed scraping attempts
-- **Data Storage**: PostgreSQL database optimized for review data and analysis results
-
-#### Machine Learning Pipeline
-- **Sentiment Analysis**: Classifies reviews as positive, negative, or neutral
-- **Category Classification**: Fine-tuned BERT model sorts reviews into 16 specific categories
-- **Vector Embeddings**: Transforms review text into vector representations for similarity search
-- **Model Persistence**: Efficient storage and retrieval of trained models
-
-#### AI-Powered Insights
-- **Gemini API Integration**: Generates comprehensive insights about specific feedback categories
-- **Structured Analysis**: Creates organized summaries of positive and negative aspects
-- **Time-Series Analysis**: Tracks sentiment changes and feature performance over time
-- **Fallback Handling**: Alternative text extraction when primary parsing methods fail
-
-#### RAG-Based Chatbot
-- **Vector Search**: SentenceTransformer converts queries into searchable vectors
-- **Contextual Retrieval**: Finds and ranks relevant reviews based on semantic similarity
-- **Context Augmentation**: Enhances AI responses with retrieved review data
-- **Response Generation**: Gemini API produces human-like answers grounded in actual review data
-
-### Frontend Architecture
-
-#### Component Structure
-- **React + TypeScript**: Modern frontend with strong typing
-- **Dashboard Views**: Main analysis dashboards with sentiment trends
-- **Detailed Feedback Explorer**: Deep-dive interface for individual reviews
-- **Product Feedback Analysis**: Category-specific review insights
-- **Interactive Chat Interface**: Conversational UI for the RAG system
-
-#### Visualization Components
-- **Trend Charts**: Time-based visualization of sentiment patterns
-- **Source Distribution**: Breakdown of sentiment by data source
-- **Feature Analysis**: Comparative visualization of product features
-- **Topic Modeling**: Visual representation of common themes in reviews
-
-## Data Flow
-
-1. **Collection**: Scrapers gather reviews from multiple platforms
-2. **Processing**: ML models analyze sentiment and categorize reviews
-3. **Enrichment**: Reviews are vectorized and stored with metadata
-4. **Analysis**: Gemini API generates insights from processed data
-5. **Presentation**: Frontend displays visualizations and interactive reports
-6. **Interaction**: Users explore data and query the RAG chatbot
-
-## Project Setup Guide
-
-### Notes
-- Requires **pnpm**, **Node.js**, **Python 3.9+**
-- On Windows, use `venv\Scripts\activate` instead of `source venv/bin/activate`
-- Environment variables must be configured in `.env` file
-
-### Frontend
-
-1. Navigate to the frontend directory:
-   ```sh
-   cd frontend
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/listnrly.git
+   cd listnrly
    ```
 
-2. Install dependencies:
-   ```sh
+2. **Install dependencies**
+   ```bash
+   cd frontend
    pnpm install
    ```
 
-3. Start the development server:
-   ```sh
-   pnpm dev
+3. **Start development server**
+   ```bash
+   pnpm run dev
    ```
 
+4. **Open in browser**
+   ```
+   http://localhost:5173
+   ```
 
+### Backend Setup (Optional)
 
+1. **Navigate to backend directory**
+   ```bash
+   cd backend
+   ```
 
-### Database Setup
-
-#### Install PostgreSQL
-If you haven't installed PostgreSQL, install it using:
-
-**Ubuntu:**
-```sh
-sudo apt update
-sudo apt install postgresql postgresql-contrib
-```
-
-**Mac (Homebrew):**
-```sh
-brew install postgresql
-```
-
-**Windows:**
-Download from [official PostgreSQL website](https://www.postgresql.org/download/).
-
-#### Enable and Start PostgreSQL
-```sh
-sudo systemctl enable postgresql
-sudo systemctl start postgresql
-```
-
-#### Create a Database and User
-```sh
-sudo -u postgres psql
-```
-Then, inside the PostgreSQL shell:
-```sql
-CREATE DATABASE sentique;
-CREATE USER sentique_user WITH PASSWORD 'my_password';
-ALTER ROLE sentique_user SET client_encoding TO 'utf8';
-ALTER ROLE sentique_user SET default_transaction_isolation TO 'read committed';
-ALTER ROLE sentique_user SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE sentique TO sentique_user;
-\q
-```
-
-#### Install `pgvector` Extension
-Connect to your database:
-```sh
-psql -U sentique_user -d sentique
-```
-Then, enable the `pgvector` extension:
-```sql
-CREATE EXTENSION vector;
-```
-
-### Redis Setup
-
-#### Install Redis
-
-**Ubuntu:**
-```sh
-sudo apt update
-sudo apt install redis-server
-```
-
-**Mac (Homebrew):**
-```sh
-brew install redis
-```
-
-**Windows:**
-Use [Memurai](https://www.memurai.com/) (a Redis alternative for Windows) or install Redis via WSL.
-
-#### Start and Enable Redis
-```sh
-sudo systemctl enable redis-server
-sudo systemctl start redis-server
-```
-
-#### Verify Redis is Running
-```sh
-redis-cli ping
-```
-You should see `PONG` as output.
-
-
-### Backend
-
-1. Create and activate a virtual environment:
-   ```sh
+2. **Create virtual environment**
+   ```bash
    python -m venv venv
-   source venv/bin/activate  # For macOS/Linux
-   # For Windows:
-   # venv\Scripts\activate
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-2. Install required dependencies:
-   ```sh
+3. **Install dependencies**
+   ```bash
    pip install -r requirements.txt
    ```
 
-3. Apply database migrations:
-   ```sh
-   python manage.py makemigrations
+4. **Run migrations**
+   ```bash
    python manage.py migrate
    ```
 
-4. Run the celery worker:
-   ```sh
-   celery -A backend worker --loglevel=info
-   ```
-
-5. Run the development server:
-   ```sh
+5. **Start development server**
+   ```bash
    python manage.py runserver
    ```
+
+## 🎯 Demo Flow
+
+### 1. Landing Page
+- Beautiful hero section with call-to-action
+- Features, pricing, and about sections
+- Smooth scrolling navigation
+- Authentication modal
+
+### 2. Signup Process
+- Company domain input (e.g., "www.netflix.com")
+- Form validation and submission
+- Redirects to loading simulation
+
+### 3. Loading Experience
+- **10 seconds**: Data scraping simulation
+- **10 seconds**: Review analysis simulation
+- Real-time progress indicators
+- Automatic navigation to dashboard
+
+### 4. Dashboard
+- Company-specific sample data
+- Interactive charts and graphs
+- Sentiment analysis breakdown
+- Trending topics and insights
+- Feedback sources distribution
+
+## 🎨 Sample Data Themes
+
+The platform includes realistic sample data for different company types:
+
+- **Netflix**: Entertainment and streaming focused
+- **Uber**: Transportation and ride-sharing focused  
+- **Spotify**: Music and audio streaming focused
+- **Airbnb**: Travel and accommodation focused
+
+Each theme includes:
+- Realistic reviews and feedback
+- Appropriate sentiment distribution
+- Relevant trending topics
+- Industry-specific insights
+
+## 🛠️ Development
+
+### Available Scripts
+
+```bash
+# Development
+pnpm run dev          # Start development server
+pnpm run build        # Build for production
+pnpm run preview      # Preview production build
+pnpm run lint         # Run ESLint
+
+# Backend (if using Django)
+python manage.py runserver    # Start Django server
+python manage.py migrate      # Run database migrations
+python manage.py collectstatic # Collect static files
+```
+
+### Key Dependencies
+
+**Frontend:**
+- React 19
+- TypeScript 5.7+
+- Tailwind CSS 3.4
+- Vite 6.3
+- React Router DOM
+- Recharts (data visualization)
+- Radix UI (accessible components)
+
+**Backend:**
+- Django 4.2+
+- Django REST Framework
+- Celery (task queue)
+- PostgreSQL (database)
+- Redis (caching)
+
+## 📱 Screenshots
+
+### Landing Page
+![Landing Page](docs/landing.png)
+
+### Dashboard
+![Dashboard](docs/dashboard.png)
+
+### Sentiment Analysis
+![Sentiment Analysis](docs/sentiment.png)
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file in the frontend directory:
+
+```env
+VITE_API_URL=http://localhost:8000
+VITE_APP_NAME=Listnrly
+```
+
+### Tailwind Configuration
+
+The project uses a custom Tailwind configuration with:
+- Custom color palette
+- Responsive utilities
+- Dark mode support
+- Custom animations
+
+## 🚀 Deployment
+
+### GitHub Pages
+
+1. **Build the project**
+   ```bash
+   cd frontend
+   pnpm run build
+   ```
+
+2. **Deploy to GitHub Pages**
+   - Go to repository Settings > Pages
+   - Select source: Deploy from a branch
+   - Choose branch: `main` and folder: `/docs`
+   - Copy build output to `/docs` folder
+
+### Vercel
+
+1. **Connect repository to Vercel**
+2. **Set build command**: `cd frontend && pnpm install && pnpm run build`
+3. **Set output directory**: `frontend/dist`
+4. **Deploy**
+
+### Netlify
+
+1. **Connect repository to Netlify**
+2. **Set build command**: `cd frontend && pnpm install && pnpm run build`
+3. **Set publish directory**: `frontend/dist`
+4. **Deploy**
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Bolt Frontend**: Beautiful landing page components
+- **React Team**: Amazing frontend framework
+- **Tailwind CSS**: Utility-first CSS framework
+- **Vite**: Lightning-fast build tool
+
+## 📞 Support
+
+For support, email support@listnrly.com or create an issue in this repository.
+
+---
+
+**Listnrly** - Transform scattered feedback into actionable intelligence. 🚀
