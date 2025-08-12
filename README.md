@@ -280,3 +280,4 @@ For support, email support@listnrly.com or create an issue in this repository.
 ---
 
 **Listnrly** - Transform scattered feedback into actionable intelligence. 🚀
+# Listnrly
