@@ -1,72 +1,45 @@
 "use client"
 
-import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { getTrendingTopic } from "@/pages/Dashboard/api.ts";
+import { TrendingTopic } from "@/lib/sampleData";
 
-export function TrendingTopics({ timeFilter }: { timeFilter: string }) {
-  const [topics, setTopics] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface TrendingTopicsProps {
+  topics?: TrendingTopic[];
+}
 
-  const fetchTrendingTopics = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await getTrendingTopic(timeFilter);
-      // Ensure we always have an array, even if the API returns null
-      setTopics(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Error fetching trending topics:", err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      setTopics([]); // Set empty array on error
-    } finally {
-      setLoading(false);
-    }
-  };
+export function TrendingTopics({ topics }: TrendingTopicsProps) {
+  // Use sample data if no topics provided
+  const displayTopics = topics || [
+    { topic: "User Interface", count: 450, sentiment: "positive" as const },
+    { topic: "Customer Service", count: 320, sentiment: "negative" as const },
+    { topic: "App Performance", count: 280, sentiment: "positive" as const },
+    { topic: "Pricing", count: 200, sentiment: "negative" as const },
+    { topic: "Features", count: 180, sentiment: "positive" as const },
+  ];
 
-  useEffect(() => {
-    fetchTrendingTopics();
-  }, [timeFilter]);
-
-  if (loading) {
-    return <div>Loading trending topics...</div>;
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
-
-  // Safely calculate max count with fallback
-  const maxCount = topics.length > 0 
-    ? Math.max(...topics.map((item) => item.last_30_days_mentions || 0), 1) 
-    : 1;
+  // Calculate max count for progress bars
+  const maxCount = Math.max(...displayTopics.map(item => item.count), 1);
 
   return (
     <div className="space-y-4">
-      {topics.length > 0 ? (
-        topics.map((item) => (
-          <div key={item.category} className="space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">{item.category}</span>
-              <Badge variant={item.sentiment === "positive" ? "default" : "destructive"}>
-                {item.last_30_days_mentions} mentions
-              </Badge>
-            </div>
-            <Progress 
-              value={(item.last_30_days_mentions / maxCount) * 100} 
-              className="h-2" 
-            />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>{item.trend_direction}</span>
-              <span>{item.sentiment}</span>
-            </div>
+      {displayTopics.map((item) => (
+        <div key={item.topic} className="space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">{item.topic}</span>
+            <Badge variant={item.sentiment === "positive" ? "default" : "destructive"}>
+              {item.count} mentions
+            </Badge>
           </div>
-        ))
-      ) : (
-        <div>No trending topics available</div>
-      )}
+          <Progress 
+            value={(item.count / maxCount) * 100} 
+            className="h-2" 
+          />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span className="capitalize">{item.sentiment}</span>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

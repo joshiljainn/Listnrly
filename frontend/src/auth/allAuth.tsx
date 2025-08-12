@@ -70,7 +70,7 @@ export const URLs: Record<string, string> = Object.freeze({
     // Auth: Sessions
     SESSIONS: BASE_URL + '/auth/sessions',
 
-    USERMETA: 'http://localhost:10000/_allauth/api/profile/',
+    USERMETA: 'http://localhost:8000/_allauth/api/profile/',
 
     // Auth: WebAuthn
     REAUTHENTICATE_WEBAUTHN: BASE_URL + '/auth/webauthn/reauthenticate',

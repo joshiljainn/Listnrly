@@ -57,22 +57,35 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
   // Check processing status from API
   const checkProcessingStatus = async () => {
     try {
-      // Simulate API call to check status
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // Call the actual backend API to check status
+      const response = await fetch('/_allauth/onboard/check-status/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
 
-      // For demo purposes, randomly decide if processing is complete
-      const isComplete = Math.random() > 0.3
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      if (isComplete) {
-        setStatus("completed")
-        setStep(2) // Move to dashboard
+      const data = await response.json();
+      
+      if (data.overall_status === "completed") {
+        setStatus("completed");
+        setStep(2); // Move to dashboard
+      } else if (data.overall_status === "failed") {
+        setStatus("error");
+        setErrorMessage("Processing failed. Please try again.");
       } else {
         // Still processing
-        setStatus("processing")
+        setStatus("processing");
       }
     } catch (error) {
-      setStatus("error")
-      setErrorMessage(`Failed to check processing status. Please try again later.`)
+      console.error('Error checking processing status:', error);
+      setStatus("error");
+      setErrorMessage(`Failed to check processing status. Please try again later.`);
     }
   }
 

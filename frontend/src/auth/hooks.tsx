@@ -11,7 +11,41 @@ export function useConfig(): any {
 
 export function useUser(): any {
     const auth = useContext(AuthContext)?.auth
-    return authInfo(auth).user
+    const [userData, setUserData] = useState<any>(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (auth?.status === 200 && auth?.data?.user) {
+                try {
+                    const response = await fetch('http://localhost:8000/_allauth/api/profile/profile/', {
+                        credentials: 'include',
+                        headers: {
+                            'Accept': 'application/json',
+                        }
+                    })
+                    if (response.ok) {
+                        const data = await response.json()
+                        setUserData(data.user)
+                    } else {
+                        // Fallback to basic auth user data
+                        setUserData(authInfo(auth).user)
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error)
+                    // Fallback to basic auth user data
+                    setUserData(authInfo(auth).user)
+                }
+            } else {
+                setUserData(authInfo(auth).user)
+            }
+            setLoading(false)
+        }
+
+        fetchUserData()
+    }, [auth])
+
+    return userData
 }
 
 export function useAuthInfo(): any {

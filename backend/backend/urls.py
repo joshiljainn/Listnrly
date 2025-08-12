@@ -22,6 +22,9 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("_allauth/", include("allauth.headless.urls")),
     path("_allauth/", include('gemini_integration.urls')),
+    # Onboarding APIs
+    path("_allauth/onboard/", include('onboard.urls')),
+    path("_allauth/api/profile/", include('onboard.urls')),
     path("_allauth/stats/", include('dashboard.urls')),
     path('', include('dashboard.urls')),  # This should include dashboard URLs
     path("api/", include('dashboard.urls')),  # Add a dedicated API path that matches what the frontend is using

@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-white text-gray-900;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  /* 3D Transform utilities */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  
+  .rotate-y-6 {
+    transform: rotateY(6deg);
+  }
+  
+  .rotate-y-12 {
+    transform: rotateY(12deg);
+  }
+  
+  .rotate-3d {
+    transform: perspective(1000px) rotateY(-15deg) rotateX(15deg);
+  }
+  
+  .rotate-3d-hover {
+    transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+  }
+  
+  /* Responsive text utilities */
+  .text-responsive {
+    font-size: clamp(1rem, 4vw, 1.25rem);
+  }
+  
+  .text-responsive-lg {
+    font-size: clamp(1.5rem, 6vw, 3rem);
+  }
+  
+  .text-responsive-xl {
+    font-size: clamp(2rem, 8vw, 4rem);
+  }
+  
+  /* Container utilities */
+  .container-responsive {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .container-responsive {
+      max-width: 640px;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .container-responsive {
+      max-width: 768px;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .container-responsive {
+      max-width: 1024px;
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .container-responsive {
+      max-width: 1280px;
+    }
+  }
+}

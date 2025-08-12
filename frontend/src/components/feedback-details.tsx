@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -17,68 +17,91 @@ import {
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
-import { getFeedbackDetails } from "@/pages/Dashboard/api.ts";
+import { Review } from "@/lib/sampleData";
 
-interface FeedbackItem {
-  id: number
-  review_id: string
-  date: string
-  rating: number | null
-  source: string
-  review: string
-  title: string | null
-  username: string | null
-  url: string
-  category: string | null
-  sub_category: string | null
-  sentiment: "positive" | "negative" | "neutral" | null
-  particular_issue: string | null
-  summary: string | null
+interface FeedbackDetailsProps {
+  reviews?: Review[];
 }
 
-interface PaginatedResponse {
-  count: number
-  next: string | null
-  previous: string | null
-  results: FeedbackItem[]
-}
-
-export function FeedbackDetails() {
-  const [feedbackData, setFeedbackData] = useState<FeedbackItem[]>([])
+export function FeedbackDetails({ reviews }: FeedbackDetailsProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedSource, setSelectedSource] = useState("all")
   const [selectedSentiment, setSelectedSentiment] = useState("all")
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedFeedback, setSelectedFeedback] = useState<FeedbackItem | null>(null)
+  const [selectedFeedback, setSelectedFeedback] = useState<Review | null>(null)
   const [notes, setNotes] = useState<Record<string, string>>({})
   const [important, setImportant] = useState<Record<string, boolean>>({})
-  const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [totalCount, setTotalCount] = useState(0)
+  const itemsPerPage = 10
 
-  useEffect(() => {
-    fetchFeedbackData(1)
-  }, [searchTerm, selectedSource, selectedSentiment, selectedCategory])
-
-  const fetchFeedbackData = async (page: number) => {
-    setLoading(true)
-    try {
-      const response = await getFeedbackDetails(searchTerm, selectedSource, selectedSentiment, selectedCategory, page);
-      setFeedbackData(response.results)
-      setTotalCount(response.count)
-      setTotalPages(Math.ceil(response.count / 100))
-      setCurrentPage(page)
-    } catch (error) {
-      console.error('Error fetching feedback data:', error)
-    } finally {
-      setLoading(false)
+  // Use sample data if no reviews provided
+  const displayReviews = reviews || [
+    {
+      id: "1",
+      text: "Great experience overall! The service was fast and reliable.",
+      sentiment: "positive" as const,
+      source: "App Store",
+      rating: 5,
+      date: "2024-01-15T10:30:00Z",
+      author: "John D."
+    },
+    {
+      id: "2", 
+      text: "Disappointed with the recent changes. Quality has gone down.",
+      sentiment: "negative" as const,
+      source: "Google Play",
+      rating: 2,
+      date: "2024-01-14T15:45:00Z",
+      author: "Sarah M."
+    },
+    {
+      id: "3",
+      text: "Amazing product! Highly recommend to everyone.",
+      sentiment: "positive" as const,
+      source: "Twitter",
+      rating: 5,
+      date: "2024-01-13T09:20:00Z",
+      author: "Mike R."
+    },
+    {
+      id: "4",
+      text: "Customer service was terrible. Took forever to get a response.",
+      sentiment: "negative" as const,
+      source: "Trustpilot",
+      rating: 1,
+      date: "2024-01-12T14:20:00Z",
+      author: "Lisa K."
+    },
+    {
+      id: "5",
+      text: "Love the new features! Keep up the good work.",
+      sentiment: "positive" as const,
+      source: "Reddit",
+      rating: 4,
+      date: "2024-01-11T11:15:00Z",
+      author: "David P."
     }
-  }
+  ];
+
+  // Filter reviews based on search and filters
+  const filteredReviews = displayReviews.filter(review => {
+    const matchesSearch = review.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         review.author.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSource = selectedSource === "all" || review.source === selectedSource;
+    const matchesSentiment = selectedSentiment === "all" || review.sentiment === selectedSentiment;
+    
+    return matchesSearch && matchesSource && matchesSentiment;
+  });
+
+  // Pagination
+  const totalPages = Math.ceil(filteredReviews.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentReviews = filteredReviews.slice(startIndex, endIndex);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      fetchFeedbackData(newPage)
+      setCurrentPage(newPage);
     }
   }
 
@@ -109,7 +132,7 @@ export function FeedbackDetails() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="flex-1"
             />
-            <Button type="submit" size="icon" onClick={() => fetchFeedbackData(1)}>
+            <Button type="submit" size="icon">
               <Search className="h-4 w-4" />
             </Button>
           </div>
@@ -167,16 +190,14 @@ export function FeedbackDetails() {
                 {/* Add categories dynamically based on your data */}
               </SelectContent>
             </Select>
-            <Button variant="outline" size="icon" onClick={() => fetchFeedbackData(1)}>
+            <Button variant="outline" size="icon">
               <Filter className="h-4 w-4" />
             </Button>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        {loading ? (
-          <div className="flex justify-center py-8">Loading feedback data...</div>
-        ) : feedbackData.length === 0 ? (
+        {currentReviews.length === 0 ? (
           <div className="flex justify-center py-8">No feedback found matching your criteria</div>
         ) : (
           <>
@@ -192,8 +213,8 @@ export function FeedbackDetails() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {feedbackData.map((item) => (
-                  <TableRow key={item.review_id}>
+                {currentReviews.map((item) => (
+                  <TableRow key={item.id}>
                     <TableCell className="font-medium max-w-md truncate">
                       <Dialog>
                         <DialogTrigger asChild>
@@ -202,7 +223,7 @@ export function FeedbackDetails() {
                             className="p-0 h-auto text-left justify-start"
                             onClick={() => setSelectedFeedback(item)}
                           >
-                            {item.review.substring(0, 100)}
+                            {item.text.substring(0, 100)}
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[625px]">
@@ -219,13 +240,13 @@ export function FeedbackDetails() {
                                 {item.source} • {new Date(item.date).toLocaleDateString()}
                               </span>
                             </div>
-                            <div className="border rounded-md p-4">{item.review}</div>
+                            <div className="border rounded-md p-4">{item.text}</div>
                             <div>
                               <h4 className="mb-2 text-sm font-medium">Add Notes</h4>
                               <Textarea
                                 placeholder="Add your notes about this feedback..."
-                                value={notes[item.review_id] || ""}
-                                onChange={(e) => updateNotes(item.review_id, e.target.value)}
+                                value={notes[item.id] || ""}
+                                onChange={(e) => updateNotes(item.id, e.target.value)}
                               />
                             </div>
                           </div>
@@ -237,11 +258,11 @@ export function FeedbackDetails() {
                     <TableCell>
                       <Badge variant={item.sentiment === "positive" ? "default" : "destructive"}>{item.sentiment}</Badge>
                     </TableCell>
-                    <TableCell>{item.category}</TableCell>
+                    <TableCell>{item.author}</TableCell>
                     <TableCell>
                       <div className="flex space-x-1">
-                        <Button variant="ghost" size="icon" onClick={() => toggleImportant(item.review_id)}>
-                          <Bookmark className={`h-4 w-4 ${important[item.review_id] ? "fill-current" : ""}`} />
+                        <Button variant="ghost" size="icon" onClick={() => toggleImportant(item.id)}>
+                          <Bookmark className={`h-4 w-4 ${important[item.id] ? "fill-current" : ""}`} />
                         </Button>
                         <Button variant="ghost" size="icon">
                           <MessageSquare className="h-4 w-4" />
@@ -258,7 +279,7 @@ export function FeedbackDetails() {
 
             <div className="flex items-center justify-between mt-6">
               <div className="text-sm text-muted-foreground">
-                Showing {(currentPage - 1) * 100 + 1} to {Math.min(currentPage * 100, totalCount)} of {totalCount} entries
+                Showing {startIndex + 1} to {Math.min(endIndex, filteredReviews.length)} of {filteredReviews.length} entries
               </div>
               <div className="flex items-center space-x-2">
                 <Button

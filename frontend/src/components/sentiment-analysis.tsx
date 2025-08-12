@@ -1,37 +1,45 @@
-import React, { useState, useEffect } from 'react';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts"
 import { Bar, BarChart, XAxis, YAxis } from "recharts"
-import {getSentimentBySource, getSentimentDistribution, getSentimentTrends} from "@/pages/Dashboard/api.ts";
+import { SentimentData } from "@/lib/sampleData";
 
-export function SentimentAnalysis() {
-  const [sentimentData, setSentimentData] = useState([]);
-  const [monthlyData, setMonthlyData] = useState([]);
-  const [sourceData, setSourceData] = useState({});
+interface SentimentAnalysisProps {
+  data?: SentimentData;
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const distribution = await getSentimentDistribution();
-        const trends = await getSentimentTrends();
-        const sources = await getSentimentBySource();
-
-        setSentimentData(distribution.overall_distribution);
-        setMonthlyData(trends.trends);
-        setSourceData(sources.sources);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
+export function SentimentAnalysis({ data }: SentimentAnalysisProps) {
+  // Use sample data if no data provided
+  const sentimentData = data || {
+    positive: 1800,
+    negative: 750,
+    neutral: 450
+  };
 
   const pieChartData = [
     { name: "Positive", value: sentimentData.positive, color: "#8884d8" },
     { name: "Negative", value: sentimentData.negative, color: "#82ca9d" },
     { name: "Neutral", value: sentimentData.neutral, color: "#ffc658" },
   ];
+
+  // Generate sample monthly data
+  const monthlyData = [
+    { month: 'Jan', positive: 300, negative: 125, neutral: 75 },
+    { month: 'Feb', positive: 280, negative: 130, neutral: 70 },
+    { month: 'Mar', positive: 320, negative: 120, neutral: 80 },
+    { month: 'Apr', positive: 290, negative: 135, neutral: 65 },
+    { month: 'May', positive: 310, negative: 115, neutral: 85 },
+    { month: 'Jun', positive: 300, negative: 125, neutral: 75 },
+  ];
+
+  // Generate sample source data
+  const sourceData = {
+    "App Store": { positive: 75 },
+    "Google Play": { positive: 68 },
+    "Twitter": { positive: 82 },
+    "Reddit": { positive: 45 },
+    "Trustpilot": { positive: 90 }
+  };
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">

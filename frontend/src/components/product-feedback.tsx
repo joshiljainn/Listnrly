@@ -1,75 +1,49 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
-import {getFeatureSpecificFeedback, getProductFeedbackCategories, getTopFeedbackTopics} from "@/pages/Dashboard/api.ts";
+import { Review } from "@/lib/sampleData";
 
+interface ProductFeedbackProps {
+  reviews?: Review[];
+}
 
-export function ProductFeedback() {
-  const [productFeedbackData, setProductFeedbackData] = useState([]);
-  const [topTags, setTopTags] = useState([]);
-  const [featureFeedback, setFeatureFeedback] = useState([]);
+export function ProductFeedback({ reviews }: ProductFeedbackProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
+  // Generate sample product feedback data
+  const productFeedbackData = [
+    { category: "User Interface", positive: 450, negative: 120 },
+    { category: "Performance", positive: 380, negative: 90 },
+    { category: "Features", positive: 320, negative: 150 },
+    { category: "Customer Service", positive: 280, negative: 200 },
+    { category: "Pricing", positive: 200, negative: 300 },
+  ];
 
-      try {
-        // Fetch all data in parallel
-        const [categoriesResponse, topicsResponse, featuresResponse] = await Promise.all([
-          getProductFeedbackCategories(),
-          getTopFeedbackTopics(),
-          getFeatureSpecificFeedback()
-        ]);
+  // Generate sample top tags
+  const topTags = [
+    { name: "User Interface", count: 570, sentiment: "positive" },
+    { name: "Performance", count: 470, sentiment: "positive" },
+    { name: "Customer Service", count: 480, sentiment: "negative" },
+    { name: "Features", count: 470, sentiment: "positive" },
+    { name: "Pricing", count: 500, sentiment: "negative" },
+    { name: "App Design", count: 320, sentiment: "positive" },
+    { name: "Loading Speed", count: 280, sentiment: "positive" },
+    { name: "Bug Reports", count: 250, sentiment: "negative" },
+  ];
 
-
-        // Check if responses have the expected structure
-        if (categoriesResponse && Array.isArray(categoriesResponse)) {
-          setProductFeedbackData(categoriesResponse);
-        } else if (categoriesResponse && Array.isArray(categoriesResponse.data)) {
-          setProductFeedbackData(categoriesResponse.data);
-        } else {
-          console.error("Invalid categories data format:", categoriesResponse);
-          setProductFeedbackData([]);
-        }
-
-        if (topicsResponse && Array.isArray(topicsResponse)) {
-          setTopTags(topicsResponse);
-        } else if (topicsResponse && Array.isArray(topicsResponse.data)) {
-          setTopTags(topicsResponse.data);
-        } else {
-          console.error("Invalid topics data format:", topicsResponse);
-          setTopTags([]);
-        }
-
-        if (featuresResponse && Array.isArray(featuresResponse)) {
-          setFeatureFeedback(featuresResponse);
-        } else if (featuresResponse && Array.isArray(featuresResponse.data)) {
-          setFeatureFeedback(featuresResponse.data);
-        } else {
-          console.error("Invalid features data format:", featuresResponse);
-          setFeatureFeedback([]);
-        }
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError("Failed to load data. Please try again later.");
-        setProductFeedbackData([]);
-        setTopTags([]);
-        setFeatureFeedback([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  // Generate sample feature feedback
+  const featureFeedback = [
+    { name: "Dashboard", positive: 180, negative: 45 },
+    { name: "Notifications", positive: 120, negative: 80 },
+    { name: "Search Function", positive: 200, negative: 60 },
+    { name: "Mobile App", positive: 250, negative: 90 },
+    { name: "Analytics", positive: 150, negative: 70 },
+    { name: "Export Feature", positive: 100, negative: 40 },
+  ];
 
   // Filter out tags with null sentiment and match search term
   const filteredTags = topTags.filter(tag =>
@@ -80,19 +54,11 @@ export function ProductFeedback() {
   );
 
   // Calculate percentage for feature feedback
-  const calculatePercentage = (positive, negative) => {
+  const calculatePercentage = (positive: number, negative: number) => {
     const total = positive + negative;
     if (total === 0) return 0;
     return Math.round((positive / total) * 100);
   };
-
-  if (isLoading) {
-    return <div className="flex justify-center items-center h-64">Loading product feedback data...</div>;
-  }
-
-  if (error) {
-    return <div className="flex justify-center items-center h-64 text-red-500">{error}</div>;
-  }
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">

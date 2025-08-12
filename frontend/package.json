@@ -1,5 +1,5 @@
 {
-  "name": "sentique",
+  "name": "listnrly",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -51,7 +51,7 @@
     "recharts": "^2.15.1",
     "remark-gfm": "^4.0.1",
     "remeda": "2",
-    "sentique": "file:",
+    "listnrly": "file:",
     "shiki": "1",
     "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.2",

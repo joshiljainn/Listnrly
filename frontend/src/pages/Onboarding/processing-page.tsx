@@ -5,15 +5,34 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button.tsx"
 import { Loader2, CheckCircle, AlertCircle, RefreshCw } from "lucide-react"
 import { useUser } from "@/auth"
+import axios from "axios"
 
 export function ProcessingPage() {
-  const { is_onboarded = false, step_status = {} } = useUser() || {};
+  const user = useUser();
+  const { is_onboarded = false, step_status = {} } = user || {};
   const [progress, setProgress] = useState(0)
   const [status, setStatus] = useState("processing") // "processing", "completed", "error"
   const [errorMessage, setErrorMessage] = useState("")
 
+  // 15-second auto-redirect timer (no countdown display)
+  useEffect(() => {
+    if (status === "processing") {
+      const timer = setTimeout(() => {
+        // Force redirect to dashboard after 15 seconds
+        window.location.href = "/"
+      }, 15000)
+      return () => clearTimeout(timer)
+    }
+  }, [status])
+
   // Determine status based on user data
   useEffect(() => {
+    // If user data is still loading, keep processing status
+    if (!user) {
+      setStatus("processing")
+      return
+    }
+
     if (is_onboarded) {
       setStatus("completed")
     } else {
@@ -37,7 +56,7 @@ export function ProcessingPage() {
         setStatus("processing")
       }
     }
-  }, [is_onboarded, step_status])
+  }, [user, is_onboarded, step_status])
 
 
   const handleManualCheck = () => {

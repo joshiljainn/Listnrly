@@ -1,66 +1,48 @@
-import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Line, LineChart, Cell } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getFeedbackSources } from "@/pages/Dashboard/api.ts";
+import { FeedbackSource } from "@/lib/sampleData";
 
 interface FeedbackSourcesProps {
   detailed?: boolean;
-  timeFilter: string;
+  sources?: FeedbackSource[];
 }
 
-export function FeedbackSources({ detailed = false, timeFilter }: FeedbackSourcesProps) {
-  const [sourcesData, setSourcesData] = useState([]);
-  const [sourcesOverTimeData, setSourcesOverTimeData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+export function FeedbackSources({ detailed = false, sources }: FeedbackSourcesProps) {
   const colors = {
-    "appstore": "#4285F4",
-    "googleplay": "#FF4500",
-    "twitter": "#1DA1F2",
-    "reddit": "#A2AAAD",
-    "trustpilot": "#00B67A"
+    "App Store": "#4285F4",
+    "Google Play": "#FF4500",
+    "Twitter": "#1DA1F2",
+    "Reddit": "#A2AAAD",
+    "Trustpilot": "#00B67A"
   };
 
-  const fetchFeedbackSources = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await getFeedbackSources(timeFilter);
+  // Use sample data if no sources provided
+  const displaySources = sources || [
+    { source: "App Store", count: 1200, percentage: 35 },
+    { source: "Google Play", count: 900, percentage: 26 },
+    { source: "Twitter", count: 800, percentage: 23 },
+    { source: "Reddit", count: 400, percentage: 12 },
+    { source: "Trustpilot", count: 200, percentage: 4 }
+  ];
 
-      // Enrich sources data with colors
-      const enrichedSources = data.sources.map((item: any) => ({
-        ...item,
-        color: colors[item.source] || "#8884d8"
-      }));
-      setSourcesData(enrichedSources);
+  // Enrich sources data with colors
+  const sourcesData = displaySources.map((item) => ({
+    ...item,
+    color: colors[item.source as keyof typeof colors] || "#8884d8"
+  }));
 
-      // Transform sources_over_time to match colors object keys
-      const transformedOverTimeData = data.sources_over_time.map((item: any) => ({
-        month: item.month,
-        googleplay: item.Playstore,
-        reddit: item.Reddit,
-        twitter: item.X,
-        appstore: item.AppStore,
-        trustpilot: item["Trust Pilot"]
-      }));
-      setSourcesOverTimeData(transformedOverTimeData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Generate sample time series data
+  const sourcesOverTimeData = [
+    { month: 'Jan', "App Store": 120, "Google Play": 90, "Twitter": 80, "Reddit": 40, "Trustpilot": 20 },
+    { month: 'Feb', "App Store": 110, "Google Play": 85, "Twitter": 75, "Reddit": 38, "Trustpilot": 18 },
+    { month: 'Mar', "App Store": 130, "Google Play": 95, "Twitter": 85, "Reddit": 42, "Trustpilot": 22 },
+    { month: 'Apr', "App Store": 115, "Google Play": 88, "Twitter": 78, "Reddit": 39, "Trustpilot": 19 },
+    { month: 'May', "App Store": 125, "Google Play": 92, "Twitter": 82, "Reddit": 41, "Trustpilot": 21 },
+    { month: 'Jun', "App Store": 120, "Google Play": 90, "Twitter": 80, "Reddit": 40, "Trustpilot": 20 },
+  ];
 
-  useEffect(() => {
-    fetchFeedbackSources();
-  }, [timeFilter]);
-
-  if (loading) return <div>Loading feedback sources...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
-
-  const totalCount = sourcesData.reduce((sum: number, item: any) => sum + item.count, 0) || 1;
+  const totalCount = sourcesData.reduce((sum, item) => sum + item.count, 0) || 1;
 
   if (!detailed) {
     return (
@@ -146,11 +128,11 @@ export function FeedbackSources({ detailed = false, timeFilter }: FeedbackSource
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="googleplay" stroke={colors.googleplay} strokeWidth={2} />
-                  <Line type="monotone" dataKey="reddit" stroke={colors.reddit} strokeWidth={2} />
-                  <Line type="monotone" dataKey="twitter" stroke={colors.twitter} strokeWidth={2} />
-                  <Line type="monotone" dataKey="appstore" stroke={colors.appstore} strokeWidth={2} />
-                  <Line type="monotone" dataKey="trustpilot" stroke={colors.trustpilot} strokeWidth={2} />
+                  <Line type="monotone" dataKey="Google Play" stroke={colors["Google Play"]} strokeWidth={2} />
+                  <Line type="monotone" dataKey="Reddit" stroke={colors["Reddit"]} strokeWidth={2} />
+                  <Line type="monotone" dataKey="Twitter" stroke={colors["Twitter"]} strokeWidth={2} />
+                  <Line type="monotone" dataKey="App Store" stroke={colors["App Store"]} strokeWidth={2} />
+                  <Line type="monotone" dataKey="Trustpilot" stroke={colors["Trustpilot"]} strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             </TabsContent>
@@ -161,11 +143,11 @@ export function FeedbackSources({ detailed = false, timeFilter }: FeedbackSource
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="googleplay" fill={colors.googleplay} />
-                  <Bar dataKey="reddit" fill={colors.reddit} />
-                  <Bar dataKey="twitter" fill={colors.twitter} />
-                  <Bar dataKey="appstore" fill={colors.appstore} />
-                  <Bar dataKey="trustpilot" fill={colors.trustpilot} />
+                  <Bar dataKey="Google Play" fill={colors["Google Play"]} />
+                  <Bar dataKey="Reddit" fill={colors["Reddit"]} />
+                  <Bar dataKey="Twitter" fill={colors["Twitter"]} />
+                  <Bar dataKey="App Store" fill={colors["App Store"]} />
+                  <Bar dataKey="Trustpilot" fill={colors["Trustpilot"]} />
                 </BarChart>
               </ResponsiveContainer>
             </TabsContent>

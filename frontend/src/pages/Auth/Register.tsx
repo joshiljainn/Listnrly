@@ -10,8 +10,16 @@ export default function Register() {
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <GalleryVerticalEnd className="size-4" />
           </div>
-          Sentique
+          Listnrly
         </a>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Listnrly
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Create your account to get started
+          </p>
+        </div>
         <OnboardForm />
       </div>
     </div>

@@ -12,15 +12,14 @@ from django.db.models import F
 from django.db.models.expressions import RawSQL
 from sentence_transformers import SentenceTransformer
 
-from google import genai
-from environs import env
+import google.generativeai as genai
 import re
 import datetime
 from django.utils.timezone import now
 
 # Load environment variables
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY_VIEW")
-client = genai.Client(api_key=GEMINI_API_KEY)  
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+genai.configure(api_key=GEMINI_API_KEY)  
 
 
 def extract_filters_from_prompt(prompt):
@@ -113,18 +112,11 @@ class ChatAPIView(APIView):
                 }
             ]
 
-            # 6. Call Gemini to generate a response and stream it back.
-            response = client.models.generate_content_stream(
-                model="gemini-1.5-pro",
-                contents=final_prompt,
-            )
-
-            def stream_to_client():
-                for chunk in response:
-                    text = chunk.text
-                    yield f'0:{json.dumps(text)}\n'
-
-            return StreamingHttpResponse(stream_to_client(), content_type="text/event-stream")
+            # 6. Call Gemini to generate a response.
+            model = genai.GenerativeModel('gemini-1.5-pro')
+            response = model.generate_content(final_prompt)
+            
+            return Response({"response": response.text}, status=200)
 
         except Exception as e:
             return Response(
