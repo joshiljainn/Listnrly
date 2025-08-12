@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
-import LandingPage from '../pages/Landing/LandingPage';
-import SignupPage from '../pages/Signup/SignupPage';
-import LoadingPage from '../pages/Loading/LoadingPage';
-import SampleDashboard from '../pages/Dashboard/SampleDashboard';
+import { LandingPage } from '../pages/Landing/LandingPage';
+import { SignupPage } from '../pages/Signup/SignupPage';
+import { LoadingPage } from '../pages/Loading/LoadingPage';
+import { SampleDashboard } from '../pages/Dashboard/SampleDashboard';
 
 const routes: RouteObject[] = [
   { path: '/', element: <LandingPage /> },
