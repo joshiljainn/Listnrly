@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { SampleData, generateSampleData } from '@/lib/sampleData';
+import { SampleData, generateSampleData } from '@/lib/sampleData.ts';
 
 interface SampleDataContextType {
   sampleData: SampleData | null;
